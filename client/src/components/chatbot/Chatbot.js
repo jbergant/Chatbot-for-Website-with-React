@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import { v4 as uuid } from 'uuid';
 
 import Message from './Message';
+import Card from './Card';
 
 const cookies = new Cookies();
 
@@ -69,15 +70,37 @@ class Chatbot extends Component {
         this.talkInput.focus();
     }
 
+    renderCards(cards) {
+        return cards.map((card, i) => <Card key={i} payload={card.structValue}/>);
+    }
+
+    renderOneMessage(message, i) {
+
+        if (message.msg && message.msg.text && message.msg.text.text) {
+            return <Message key={i} speaks={message.speaks} text={message.msg.text.text}/>;
+        } else if (message.msg && message.msg.payload.fields.cards) { //message.msg.payload.fields.cards.listValue.values
+
+            return <div key={i}>
+                <div className="card-panel grey lighten-5 z-depth-1">
+                    <div style={{overflow: 'hidden'}}>
+                        <div className="col s2">
+                            <a href="/" className="btn-floating btn-large waves-effect waves-light red">{message.speaks}</a>
+                        </div>
+                        <div style={{ overflow: 'auto', overflowY: 'scroll'}}>
+                            <div style={{ height: 300, width:message.msg.payload.fields.cards.listValue.values.length * 270}}>
+                                {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
     renderMessages(returnedMessages) {
         if (returnedMessages) {
             return returnedMessages.map((message, i) => {
-                if (message.msg && message.msg.text && message.msg.text.text) {
-                        return <Message key={i} speaks={message.speaks} text={message.msg.text.text}/>;
-                    } else {
-                        return <h2>Cards</h2>;
-                    }
-
+                    return this.renderOneMessage(message, i);
                 }
             )
         } else {

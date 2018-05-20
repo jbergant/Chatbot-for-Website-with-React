@@ -12,7 +12,7 @@ const Card = (props) => {
                 </div>
                 <div className="card-content">
                     {props.payload.fields.description.stringValue}
-                    <p> <a  href="/">{props.payload.fields.price.stringValue}</a></p>
+                    <p> <a href="/">{props.payload.fields.price.stringValue}</a></p>
                 </div>
                 <div className="card-action">
                     <a target="_blank" rel="noopener noreferrer" href={props.payload.fields.link.stringValue}>GET NOW</a>
