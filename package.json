@@ -16,8 +16,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "actions-on-google": "^2.6.0",
     "body-parser": "^1.18.3",
     "dialogflow": "^0.8.0",
+    "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.16.4",
     "mongoose": "^5.1.2"
   },
