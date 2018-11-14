@@ -8,11 +8,15 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "backend": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }
