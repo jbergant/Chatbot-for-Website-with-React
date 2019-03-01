@@ -5,6 +5,8 @@ import Message from './Message';
 
 class Chatbot extends Component {
     messagesEnd;
+    talkInput;
+
     constructor(props) {
         super(props);
         // This binding is necessary to make `this` work in the callback
@@ -56,6 +58,7 @@ class Chatbot extends Component {
 
     componentDidUpdate() {
         this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+        this.talkInput.focus();
     }
 
     renderMessages(returnedMessages) {
@@ -85,7 +88,7 @@ class Chatbot extends Component {
                     <div ref={(el) => { this.messagesEnd = el; }}
                          style={{ float:"left", clear: "both" }}>
                     </div>
-                    <input type="text" onKeyPress={this._handleInputKeyPress}  />
+                    <input type="text" ref={(input) => { this.talkInput = input; }}  onKeyPress={this._handleInputKeyPress}  />
                 </div>
             </div>
         );
