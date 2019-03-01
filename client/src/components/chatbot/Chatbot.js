@@ -7,7 +7,8 @@ class Chatbot extends Component {
 
     constructor(props) {
         super(props);
-
+        // This binding is necessary to make `this` work in the callback
+        this._handleInputKeyPress = this._handleInputKeyPress.bind(this);
         this.state = {
             messages: []
         };
@@ -64,6 +65,12 @@ class Chatbot extends Component {
         }
     }
 
+    _handleInputKeyPress(e) {
+        if (e.key === 'Enter') {
+            this.df_text_query(e.target.value);
+            e.target.value = '';
+        }
+    }
 
     render() {
         return (
@@ -71,7 +78,7 @@ class Chatbot extends Component {
                 <div id="chatbot" style={{height: '100%', width: '100%', overflow: 'auto'}}>
                     <h2>Chatbot</h2>
                     {this.renderMessages(this.state.messages)}
-                    <input type="text"/>
+                    <input type="text" onKeyPress={this._handleInputKeyPress}  />
                 </div>
             </div>
         );
