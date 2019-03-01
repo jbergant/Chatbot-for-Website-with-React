@@ -4,7 +4,7 @@ import axios from "axios/index";
 import Message from './Message';
 
 class Chatbot extends Component {
-
+    messagesEnd;
     constructor(props) {
         super(props);
         // This binding is necessary to make `this` work in the callback
@@ -54,6 +54,10 @@ class Chatbot extends Component {
         this.df_event_query('Welcome');
     }
 
+    componentDidUpdate() {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    }
+
     renderMessages(returnedMessages) {
         if (returnedMessages) {
             return returnedMessages.map((message, i) => {
@@ -78,6 +82,9 @@ class Chatbot extends Component {
                 <div id="chatbot" style={{height: '100%', width: '100%', overflow: 'auto'}}>
                     <h2>Chatbot</h2>
                     {this.renderMessages(this.state.messages)}
+                    <div ref={(el) => { this.messagesEnd = el; }}
+                         style={{ float:"left", clear: "both" }}>
+                    </div>
                     <input type="text" onKeyPress={this._handleInputKeyPress}  />
                 </div>
             </div>
