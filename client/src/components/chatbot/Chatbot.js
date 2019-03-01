@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
+import axios from "axios/index";
+
 class Chatbot extends Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -9,6 +11,42 @@ class Chatbot extends Component {
             messages: []
         };
     }
+
+    async df_text_query (queryText) {
+        let says = {
+            speaks: 'user',
+            msg: {
+                text : {
+                    text: queryText
+                }
+            }
+        }
+        this.setState({ messages: [...this.state.messages, says]});
+        const res = await axios.post('/api/df_text_query',  {text: queryText});
+
+        for (let msg of res.data.fulfillmentMessages) {
+            says = {
+                speaks: 'bot',
+                msg: msg
+            }
+            this.setState({ messages: [...this.state.messages, says]});
+        }
+    };
+
+
+    async df_event_query(eventName) {
+
+        const res = await axios.post('/api/df_event_query',  {event: eventName});
+
+        for (let msg of res.data.fulfillmentMessages) {
+            let says = {
+                speaks: 'bot',
+                msg: msg
+            }
+
+            this.setState({ messages: [...this.state.messages, says]});
+        }
+    };
 
     render() {
         return (

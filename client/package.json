@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "materialize-css": "^1.0.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
@@ -17,5 +18,11 @@
   },
   "devDependencies": {
     "http-proxy-middleware": "^0.19.1"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
