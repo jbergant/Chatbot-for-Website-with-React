@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import axios from "axios/index";
 
+import Cookies from 'universal-cookie';
+import { v4 as uuid } from 'uuid';
+
 import Message from './Message';
+
+const cookies = new Cookies();
 
 class Chatbot extends Component {
     messagesEnd;
@@ -14,6 +19,9 @@ class Chatbot extends Component {
         this.state = {
             messages: []
         };
+        if (cookies.get('userID') === undefined) {
+            cookies.set('userID', uuid(), { path: '/' });
+        }
     }
 
     async df_text_query (queryText) {
@@ -26,7 +34,7 @@ class Chatbot extends Component {
             }
         }
         this.setState({ messages: [...this.state.messages, says]});
-        const res = await axios.post('/api/df_text_query',  {text: queryText});
+        const res = await axios.post('/api/df_text_query',  {text: queryText, userID: cookies.get('userID')});
 
         for (let msg of res.data.fulfillmentMessages) {
             says = {
@@ -40,7 +48,7 @@ class Chatbot extends Component {
 
     async df_event_query(eventName) {
 
-        const res = await axios.post('/api/df_event_query',  {event: eventName});
+        const res = await axios.post('/api/df_event_query',  {event: eventName, userID: cookies.get('userID')});
 
         for (let msg of res.data.fulfillmentMessages) {
             let says = {
