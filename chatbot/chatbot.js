@@ -67,6 +67,21 @@ module.exports = {
 
 
     handleAction: function(responses){
+        let queryResult = responses[0].queryResult;
+
+        switch (queryResult.action) {
+            case 'recommendcourses-yes':
+                if (queryResult.allRequiredParamsPresent) {
+                    
+                }
+                break;
+        }
+
+        // console.log(queryResult.action);
+        // console.log(queryResult.allRequiredParamsPresent);
+        // console.log(queryResult.fulfillmentMessages);
+        // console.log(queryResult.parameters.fields);
+
         return responses;
     },
 
