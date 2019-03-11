@@ -39,7 +39,7 @@ module.exports = app => {
             agent.add(`I didn't understand`);
             agent.add(`I'm sorry, can you try again?`);
         }
-        
+
         let intentMap = new Map();
         intentMap.set('snoopy', snoopy);
         intentMap.set('learn courses', learn);
