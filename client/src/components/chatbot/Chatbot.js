@@ -76,8 +76,13 @@ class Chatbot extends Component {
         event.preventDefault();
         event.stopPropagation();
 
-        this.df_text_query(text);
-
+        switch (payload) {
+            case 'training_masterclass':
+                this.df_event_query('MASTERCLASS');
+            default:
+                this.df_text_query(text);
+                break;
+        }
     }
 
     renderCards(cards) {
