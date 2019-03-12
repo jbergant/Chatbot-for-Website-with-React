@@ -2,24 +2,24 @@ import React from 'react';
 
 
 const QuickReply = (props) => {
-    if (props.reply.structValue.fields.payload) {
+    if (props.reply.payload) {
         return (
             <a style={{ margin: 3}} href="/" className="btn-floating btn-large waves-effect waves-light red"
                onClick={(event) =>
                    props.click(
                        event,
-                       props.reply.structValue.fields.payload.stringValue,
-                       props.reply.structValue.fields.text.stringValue
+                       props.reply.payload,
+                       props.reply.text
                    )
                }>
-                {props.reply.structValue.fields.text.stringValue}
+                {props.reply.text}
             </a>
         );
     } else {
         return (
-            <a style={{ margin: 3}} href={props.reply.structValue.fields.link.stringValue}
+            <a style={{ margin: 3}} href={props.reply.link}
                className="btn-floating btn-large waves-effect waves-light red">
-                {props.reply.structValue.fields.text.stringValue}
+                {props.reply.text}
             </a>
         );
     }
