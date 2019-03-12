@@ -37,7 +37,7 @@ class QuickReplies extends Component {
                         </div>
                         <div id="quick-replies" className="col s10">
                             {this.props.text && <p>
-                                {this.props.text.stringValue}
+                                {this.props.text}
                             </p>
                             }
                             {this.renderQuickReplies(this.props.payload)}
