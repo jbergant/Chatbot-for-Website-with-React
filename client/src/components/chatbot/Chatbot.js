@@ -26,7 +26,9 @@ class Chatbot extends Component {
         this.state = {
             messages: [],
             showBot: true,
-            shopWelcomeSent: false
+            shopWelcomeSent: false,
+            clientToken: false,
+            regenerateToken: 0
         };
         if (cookies.get('userID') === undefined) {
             cookies.set('userID', uuid(), { path: '/' });
@@ -79,16 +81,14 @@ class Chatbot extends Component {
 
         try {
 
-            if (process.env.REACT_APP_DIALOGFLOW_CLIENT_KEY === undefined
-                || process.env.REACT_APP_GOOGLE_PROJECT_ID === undefined
-                || process.env.REACT_APP_DF_SESSION_ID === undefined) {
-                console.log('cant read from env variable');
-                throw Error;
+            if (this.state.clientToken === false) {
+                const res = await axios.get('/api/get_client_token');
+                this.setState({clientToken: res.data.token});
             }
 
             var config = {
                 headers: {
-                    'Authorization': "Bearer " + process.env.REACT_APP_DIALOGFLOW_CLIENT_KEY,
+                    'Authorization': "Bearer " + this.state.clientToken,
                     'Content-Type': 'application/json; charset=utf-8'
                 }
             };
@@ -114,18 +114,24 @@ class Chatbot extends Component {
                 }
             }
         } catch (e) {
-            let says = {
-                speaks: 'bot',
-                msg: {
-                    text : {
-                        text: "I'm having troubles. I need to terminate. will be back later"}
-                }
+            if (e.response.status === 401 && this.state.regenerateToken < 1) {
+                this.setState({ clientToken: false, regenerateToken: 1 });
+                this.df_client_call(request);
             }
-            this.setState({ messages: [...this.state.messages, says]});
-            let that = this;
-            setTimeout(function(){
-                that.setState({ showBot: false})
-            }, 2000);
+            else {
+                let says = {
+                    speaks: 'bot',
+                    msg: {
+                        text : {
+                            text: "I'm having troubles. I need to terminate. will be back later"}
+                    }
+                }
+                this.setState({ messages: [...this.state.messages, says]});
+                let that = this;
+                setTimeout(function(){
+                    that.setState({ showBot: false})
+                }, 2000);
+            }
         }
 
     }
