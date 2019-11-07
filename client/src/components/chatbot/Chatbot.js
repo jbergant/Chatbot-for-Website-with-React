@@ -43,53 +43,76 @@ class Chatbot extends Component {
             }
         }
         this.setState({ messages: [...this.state.messages, says]});
-        try {
-            const res = await axios.post('/api/df_text_query',  {text, userID: cookies.get('userID')});
-
-            for (let msg of res.data.fulfillmentMessages) {
-                says = {
-                    speaks: 'bot',
-                    msg: msg
-                }
-                this.setState({ messages: [...this.state.messages, says]});
+        const request = {
+            queryInput: {
+                text: {
+                    text: text,
+                    languageCode: 'en-US',
+                },
             }
-        } catch (e) {
-            says = {
-                speaks: 'bot',
-                msg: {
-                    text : {
-                        text: "I'm having troubles. I need to terminate. will be back later"
-                    }
-                }
-            }
-            this.setState({ messages: [...this.state.messages, says]});
-            let that = this;
-            setTimeout(function(){
-                that.setState({ showBot: false})
-            }, 2000);
-        }
+        };
+        await this.df_client_call(request);
     };
 
 
     async df_event_query(event) {
+        const request = {
+            queryInput: {
+                event: {
+                    name: event,
+                    languageCode: 'en-US',
+                },
+            }
+        };
+
+        await this.df_client_call(request);
+
+    };
+
+    async df_client_call(request) {
+
         try {
-            const res = await axios.post('/api/df_event_query',  {event, userID: cookies.get('userID')});
 
-            for (let msg of res.data.fulfillmentMessages) {
-                let says = {
-                    speaks: 'bot',
-                    msg: msg
+            if (process.env.REACT_APP_DIALOGFLOW_CLIENT_KEY === undefined
+                || process.env.REACT_APP_GOOGLE_PROJECT_ID === undefined
+                || process.env.REACT_APP_DF_SESSION_ID === undefined) {
+                console.log('cant read from env variable');
+                throw Error;
+            }
+
+            var config = {
+                headers: {
+                    'Authorization': "Bearer " + process.env.REACT_APP_DIALOGFLOW_CLIENT_KEY,
+                    'Content-Type': 'application/json; charset=utf-8'
                 }
+            };
 
-                this.setState({ messages: [...this.state.messages, says]});
+
+            const res = await axios.post(
+                'https://dialogflow.googleapis.com/v2/projects/' + process.env.REACT_APP_GOOGLE_PROJECT_ID +
+                '/agent/sessions/' + process.env.REACT_APP_DF_SESSION_ID + cookies.get('userID') + ':detectIntent',
+                request,
+                config
+            );
+
+            let  says = {};
+
+
+            if (res.data.queryResult.fulfillmentMessages ) {
+                for (let msg of res.data.queryResult.fulfillmentMessages) {
+                    says = {
+                        speaks: 'bot',
+                        msg: msg
+                    }
+                    this.setState({ messages: [...this.state.messages, says]});
+                }
             }
         } catch (e) {
             let says = {
                 speaks: 'bot',
                 msg: {
                     text : {
-                        text: "I'm having troubles. I need to terminate. will be back later"
-                    }
+                        text: "I'm having troubles. I need to terminate. will be back later"}
                 }
             }
             this.setState({ messages: [...this.state.messages, says]});
@@ -99,7 +122,7 @@ class Chatbot extends Component {
             }, 2000);
         }
 
-    };
+    }
 
     resolveAfterXSeconds(x) {
         return new Promise(resolve => {
@@ -170,7 +193,8 @@ class Chatbot extends Component {
 
         if (message.msg && message.msg.text && message.msg.text.text) {
             return <Message key={i} speaks={message.speaks} text={message.msg.text.text}/>;
-        } else if (message.msg && message.msg.payload.fields.cards) { //message.msg.payload.fields.cards.listValue.values
+        } else if (message.msg && message.msg.payload
+            && message.msg.payload.fields && message.msg.payload.fields.cards) { //message.msg.payload.fields.cards.listValue.values
 
             return <div key={i}>
                 <div className="card-panel grey lighten-5 z-depth-1">
