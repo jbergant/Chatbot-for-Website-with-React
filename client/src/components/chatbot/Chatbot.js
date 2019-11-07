@@ -103,7 +103,6 @@ class Chatbot extends Component {
 
             let  says = {};
 
-
             if (res.data.queryResult.fulfillmentMessages ) {
                 for (let msg of res.data.queryResult.fulfillmentMessages) {
                     says = {
@@ -114,6 +113,7 @@ class Chatbot extends Component {
                 }
             }
         } catch (e) {
+            console.log(e);
             if (e.response.status === 401 && this.state.regenerateToken < 1) {
                 this.setState({ clientToken: false, regenerateToken: 1 });
                 this.df_client_call(request);
@@ -177,7 +177,7 @@ class Chatbot extends Component {
     hide(event) {
         event.preventDefault();
         event.stopPropagation();
-        this.setState({showBot: true});
+        this.setState({showBot: false});
     }
 
     _handleQuickReplyPayload(event, payload, text) {
